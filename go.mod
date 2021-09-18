@@ -1,4 +1,4 @@
-module github.com/tangx/cobrautils
+module github.com/go-jarvis/cobrautils
 
 go 1.16
 

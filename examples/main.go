@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/go-jarvis/cobrautils"
 	"github.com/spf13/cobra"
-	"github.com/tangx/cobrautils"
 )
 
 type student struct {
@@ -23,25 +23,24 @@ var rootCmd = &cobra.Command{
 	Use: "root",
 	Run: func(cmd *cobra.Command, args []string) {
 		_ = cmd.Help()
-		fmt.Println(stu)
-	},
-}
-
-var stu = student{
-	Name:   "zhangsanfeng",
-	Age:    20100,
-	Gender: false,
-	Address: address{
-		Home:   "chengdu",
-		School: "shuangliu",
 	},
 }
 
 func main() {
+	stu := student{
+		Name:   "zhangsanfeng",
+		Age:    20100,
+		Gender: false,
+		Address: address{
+			Home:   "chengdu",
+			School: "shuangliu",
+		},
+	}
 
 	cobrautils.BindFlags(rootCmd, &stu)
-
 	_ = rootCmd.Execute()
+
+	fmt.Printf("%+v", stu)
 
 	/*
 	   go run . --addr.home sichuan
@@ -53,6 +52,7 @@ func main() {
 	     -a, --age int            student age (default 20100)
 	     -h, --help               help for root
 	         --name string        student name (default "zhangsanfeng")
-	   {zhangsanfeng 20100 false {sichuan shuangliu}}
+
+	   {Name:zhangsanfeng Age:20100 Gender:false Address:{Home:sichuan School:shuangliu}}
 	*/
 }

@@ -65,10 +65,7 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 		name = strings.Join(parts, ".")
 
 		// 2.3. 获取
-		shorthand := typField.Tag.Get("short")
-		if len(shorthand) == 0 {
-			shorthand = typField.Tag.Get("shorthand")
-		}
+		shorthand := typField.Tag.Get("shorthand")
 
 		// 3. 获取 usage
 		usage := typField.Tag.Get("usage")
@@ -95,14 +92,26 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 			// 1.3 done: 设置 flag
 			flags.StringVarP(valuePtr, name, shorthand, v, usage)
 
+		case int:
+			flags.IntVarP(valueField.Addr().Interface().(*int), name, shorthand, v, usage)
 		case int64:
 			flags.Int64VarP(valueField.Addr().Interface().(*int64), name, shorthand, v, usage)
+
+		case uint:
+			flags.UintVarP(valueField.Addr().Interface().(*uint), name, shorthand, v, usage)
+		case uint64:
+			flags.Uint64VarP(valueField.Addr().Interface().(*uint64), name, shorthand, v, usage)
 
 		case bool:
 			flags.BoolVarP(valueField.Addr().Interface().(*bool), name, shorthand, v, usage)
 
 		case []string:
-			flags.StringSliceVarP(valueField.Addr().Interface().(*[]string), name, shorthand, v, "")
+			flags.StringSliceVarP(valueField.Addr().Interface().(*[]string), name, shorthand, v, usage)
+		case []int:
+			flags.IntSliceVarP(valueField.Addr().Interface().(*[]int), name, shorthand, v, usage)
+		case []uint:
+			flags.UintSliceVarP(valueField.Addr().Interface().(*[]uint), name, shorthand, v, usage)
 		}
+
 	}
 }
