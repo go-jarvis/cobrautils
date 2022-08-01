@@ -115,3 +115,7 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 
 	}
 }
+
+func AppendCommand(child, parent *cobra.Command) {
+	parent.AddCommand(child)
+}
