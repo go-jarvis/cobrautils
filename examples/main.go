@@ -8,8 +8,9 @@ import (
 )
 
 type student struct {
-	Name    string `flag:"name" usage:"student name" persistent:"true"`
-	Age     int64  `flag:"age" usage:"student age" shorthand:"a"`
+	Name    string  `flag:"name" usage:"student name" persistent:"true"`
+	NamePtr *string `flag:"nameptr" usage:"student name" persistent:"true"`
+	Age     int64   `flag:"age" usage:"student age" shorthand:"a"`
 	Gender  bool
 	Address address `flag:"addr"`
 }
@@ -26,11 +27,18 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+func toStringPrt(s string) *string {
+	return &s
+}
+func getString(s *string) string {
+	return *s
+}
 func main() {
 	stu := student{
-		Name:   "zhangsanfeng",
-		Age:    20100,
-		Gender: false,
+		Name:    "zhangsanfeng",
+		NamePtr: toStringPrt("zhangsanfeng"),
+		Age:     20100,
+		Gender:  false,
 		Address: address{
 			Home:   "chengdu",
 			School: "shuangliu",
@@ -40,7 +48,13 @@ func main() {
 	cobrautils.BindFlags(rootCmd, &stu)
 	_ = rootCmd.Execute()
 
-	fmt.Printf("%+v", stu)
+	fmt.Println("=== result ===")
+	fmt.Printf("%+v\n", stu)
+	if stu.NamePtr == nil {
+		fmt.Println("Warning: stu.Name is nil")
+		return
+	}
+	fmt.Println("stu.Name =", getString(stu.NamePtr))
 
 	/*
 	   go run . --addr.home sichuan

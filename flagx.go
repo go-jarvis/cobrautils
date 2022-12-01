@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/go-jarvis/cobrautils/pflagvalue"
 	"github.com/spf13/cobra"
 )
 
@@ -83,36 +84,51 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 		// value := typField.Tag.Get("value")
 
 		// 5. 类型断言
-		switch v := valueField.Interface().(type) {
+
+		vIface := valueField.Interface()
+		vAddrIface := valueField.Addr().Interface()
+		switch v := vIface.(type) {
 		case string:
 			// 1.1 done : Addr() 获取值的内存地址， Interface() 并以 interface 类型返回， (*string) 并进行 类型指针类型 断言
-			valuePtr := valueField.Addr().Interface().(*string)
+			valuePtr := vAddrIface.(*string)
 			// 1.2 done : 将 reflect.Type 值转换为对应的值
 			// value := valueField.String()
 			// 1.3 done: 设置 flag
 			flags.StringVarP(valuePtr, name, shorthand, v, usage)
 
 		case int:
-			flags.IntVarP(valueField.Addr().Interface().(*int), name, shorthand, v, usage)
+			flags.IntVarP(vAddrIface.(*int), name, shorthand, v, usage)
 		case int64:
-			flags.Int64VarP(valueField.Addr().Interface().(*int64), name, shorthand, v, usage)
-
+			flags.Int64VarP(vAddrIface.(*int64), name, shorthand, v, usage)
 		case uint:
-			flags.UintVarP(valueField.Addr().Interface().(*uint), name, shorthand, v, usage)
+			flags.UintVarP(vAddrIface.(*uint), name, shorthand, v, usage)
 		case uint64:
-			flags.Uint64VarP(valueField.Addr().Interface().(*uint64), name, shorthand, v, usage)
+			flags.Uint64VarP(vAddrIface.(*uint64), name, shorthand, v, usage)
 
 		case bool:
-			flags.BoolVarP(valueField.Addr().Interface().(*bool), name, shorthand, v, usage)
+			flags.BoolVarP(vAddrIface.(*bool), name, shorthand, v, usage)
 
 		case []string:
-			flags.StringSliceVarP(valueField.Addr().Interface().(*[]string), name, shorthand, v, usage)
+			flags.StringSliceVarP(vAddrIface.(*[]string), name, shorthand, v, usage)
 		case []int:
-			flags.IntSliceVarP(valueField.Addr().Interface().(*[]int), name, shorthand, v, usage)
+			flags.IntSliceVarP(vAddrIface.(*[]int), name, shorthand, v, usage)
 		case []uint:
-			flags.UintSliceVarP(valueField.Addr().Interface().(*[]uint), name, shorthand, v, usage)
-		}
+			flags.UintSliceVarP(vAddrIface.(*[]uint), name, shorthand, v, usage)
 
+		case *string:
+			vptr := vAddrIface.(**string)
+			vv := pflagvalue.NewStringPtrValue(vptr, v)
+			flags.VarP(vv, name, shorthand, usage)
+		case *int:
+			vv := pflagvalue.NewIntPtrValue(vAddrIface.(**int), v)
+			flags.VarP(vv, name, shorthand, usage)
+		case *int64:
+			vv := pflagvalue.NewInt64PtrValue(vAddrIface.(**int64), v)
+			flags.VarP(vv, name, shorthand, usage)
+		case *bool:
+			vv := pflagvalue.NewBoolPtrValue(vAddrIface.(**bool), v)
+			flags.VarPF(vv, name, shorthand, usage).NoOptDefVal = "true"
+		}
 	}
 }
 

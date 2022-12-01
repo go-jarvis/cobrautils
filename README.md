@@ -32,6 +32,22 @@ type student struct {
 3. `usage:"comment balalal"`: 参数说明
 4. `persistent` : 全局
 
+### flag 设置指针
+
+```go
+type student struct {
+    Name    *string `flag:"name" usage:"student name" persistent:"true"`
+    Age     *int64  `flag:"age" usage:"student age" shorthand:"a"`
+}
+```
+
+从 v1.3.0 开始， flag 支持有限指针集， 以解决常用类型的 0 值问题。
+
+包括 `*string, *int, *int64, *bool`
+
+> https://runsisi.com/2019/04/29/go-pointer-flag/
+
+
 ### 默认值设置
 
 由于所有参数的值最终都需要一个接收者， 保存之后才能够背调用。
