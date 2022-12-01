@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-jarvis/cobrautils"
 	"github.com/spf13/cobra"
 )
 
 type student struct {
-	Name    string  `flag:"name" usage:"student name" persistent:"true"`
-	NamePtr *string `flag:"nameptr" usage:"student name" persistent:"true"`
-	Age     int64   `flag:"age" usage:"student age" shorthand:"a"`
-	Gender  bool
-	Address address `flag:"addr"`
+	Name     string  `flag:"name" usage:"student name" persistent:"true"`
+	NamePtr  *string `flag:"nameptr" usage:"student name" persistent:"true"`
+	Age      int64   `flag:"age" usage:"student age" shorthand:"a"`
+	Gender   bool
+	Address  address       `flag:"addr"`
+	Duration time.Duration `flag:"duration"`
 }
 
 type address struct {
@@ -43,6 +45,7 @@ func main() {
 			Home:   "chengdu",
 			School: "shuangliu",
 		},
+		// Duration: tim,
 	}
 
 	cobrautils.BindFlags(rootCmd, &stu)
@@ -55,6 +58,7 @@ func main() {
 		return
 	}
 	fmt.Println("stu.Name =", getString(stu.NamePtr))
+	fmt.Println("duration =", stu.Duration.Seconds())
 
 	/*
 	   go run . --addr.home sichuan

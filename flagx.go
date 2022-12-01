@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/go-jarvis/cobrautils/pflagvalue"
 	"github.com/spf13/cobra"
@@ -115,6 +116,9 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 		case []uint:
 			flags.UintSliceVarP(vAddrIface.(*[]uint), name, shorthand, v, usage)
 
+		case time.Duration:
+			flags.DurationVarP(vAddrIface.(*time.Duration), name, shorthand, v, usage)
+
 		case *string:
 			vptr := vAddrIface.(**string)
 			vv := pflagvalue.NewStringPtrValue(vptr, v)
@@ -128,6 +132,9 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 		case *bool:
 			vv := pflagvalue.NewBoolPtrValue(vAddrIface.(**bool), v)
 			flags.VarPF(vv, name, shorthand, usage).NoOptDefVal = "true"
+		case *time.Duration:
+			vv := pflagvalue.NewDurationPtrValue(vAddrIface.(**time.Duration), v)
+			flags.VarP(vv, name, shorthand, usage)
 		}
 	}
 }

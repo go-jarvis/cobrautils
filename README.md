@@ -8,7 +8,19 @@ go get -u github.com/go-jarvis/cobrautils
 
 ## 使用方式
 
-> Attention: 由于 cobra 中对数据的处理方法很细致， 因此数据目前支持 `int, int64, uint, uint64`。 
+> Attention: 由于 cobra 中对数据的处理方法很细致， 因此数据目前支持 
+
+1. 字符串:
+    + `string, *string`
+2. 数字:
+    + `int, int64, uint, uint64`。 
+    + `*int, *int64`
+3. 布尔类型:
+    + `bool, *bool`
+4. 切片:
+    + `[]string, []int, []int64`
+5. 时间:
+    + `timeDuration, *time.Duration`
 
 flag 与 `cobra` 定义一致
 
@@ -24,6 +36,9 @@ func (f *FlagSet) Uint64VarP(p *uint64, name, shorthand string, value uint64, us
 type student struct {
     Name    string `flag:"name" usage:"student name" persistent:"true"`
     Age     int64  `flag:"age" usage:"student age" shorthand:"a"`
+
+    NamePtr    *string `flag:"nameptr" usage:"student name" persistent:"true"`
+    AgePtr     *int64  `flag:"ageptr" usage:"student age" shorthand:"a"`
 }
 ```
 
@@ -33,13 +48,6 @@ type student struct {
 4. `persistent` : 全局
 
 ### flag 设置指针
-
-```go
-type student struct {
-    Name    *string `flag:"name" usage:"student name" persistent:"true"`
-    Age     *int64  `flag:"age" usage:"student age" shorthand:"a"`
-}
-```
 
 从 v1.3.0 开始， flag 支持有限指针集， 以解决常用类型的 0 值问题。
 
