@@ -1,0 +1,6 @@
+
+test:
+	go run ./examples --duration 3m --account 10
+
+# gen:
+# 	go run ./generator

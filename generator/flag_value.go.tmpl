@@ -1,0 +1,13 @@
+package pflagvalue
+
+import "github.com/spf13/pflag"
+
+func InvValueFlag(vv interface{}, addr interface{}) pflag.Value {
+	switch v := vv.(type) {
+	{{ range . }}
+	case *{{ . }}:
+		return New{{. | ToCapital}}PtrValue(addr.(**{{ . }}), v){{ end }}
+	}
+
+	return nil
+}

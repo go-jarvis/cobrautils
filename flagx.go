@@ -86,55 +86,64 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 
 		// 5. 类型断言
 
-		vIface := valueField.Interface()
-		vAddrIface := valueField.Addr().Interface()
-		switch v := vIface.(type) {
+		vv := valueField.Interface()
+		addr := valueField.Addr().Interface()
+		switch v := vv.(type) {
 		case string:
 			// 1.1 done : Addr() 获取值的内存地址， Interface() 并以 interface 类型返回， (*string) 并进行 类型指针类型 断言
-			valuePtr := vAddrIface.(*string)
+			valuePtr := addr.(*string)
 			// 1.2 done : 将 reflect.Type 值转换为对应的值
 			// value := valueField.String()
 			// 1.3 done: 设置 flag
 			flags.StringVarP(valuePtr, name, shorthand, v, usage)
 
 		case int:
-			flags.IntVarP(vAddrIface.(*int), name, shorthand, v, usage)
+			flags.IntVarP(addr.(*int), name, shorthand, v, usage)
 		case int64:
-			flags.Int64VarP(vAddrIface.(*int64), name, shorthand, v, usage)
+			flags.Int64VarP(addr.(*int64), name, shorthand, v, usage)
 		case uint:
-			flags.UintVarP(vAddrIface.(*uint), name, shorthand, v, usage)
+			flags.UintVarP(addr.(*uint), name, shorthand, v, usage)
 		case uint64:
-			flags.Uint64VarP(vAddrIface.(*uint64), name, shorthand, v, usage)
+			flags.Uint64VarP(addr.(*uint64), name, shorthand, v, usage)
 
 		case bool:
-			flags.BoolVarP(vAddrIface.(*bool), name, shorthand, v, usage)
+			flags.BoolVarP(addr.(*bool), name, shorthand, v, usage)
 
 		case []string:
-			flags.StringSliceVarP(vAddrIface.(*[]string), name, shorthand, v, usage)
+			flags.StringSliceVarP(addr.(*[]string), name, shorthand, v, usage)
 		case []int:
-			flags.IntSliceVarP(vAddrIface.(*[]int), name, shorthand, v, usage)
+			flags.IntSliceVarP(addr.(*[]int), name, shorthand, v, usage)
 		case []uint:
-			flags.UintSliceVarP(vAddrIface.(*[]uint), name, shorthand, v, usage)
+			flags.UintSliceVarP(addr.(*[]uint), name, shorthand, v, usage)
 
 		case time.Duration:
-			flags.DurationVarP(vAddrIface.(*time.Duration), name, shorthand, v, usage)
+			flags.DurationVarP(addr.(*time.Duration), name, shorthand, v, usage)
 
 		case *string:
-			vptr := vAddrIface.(**string)
+			vptr := addr.(**string)
 			vv := pflagvalue.NewStringPtrValue(vptr, v)
 			flags.VarP(vv, name, shorthand, usage)
+
+		case *bool:
+			vv := pflagvalue.NewBoolPtrValue(addr.(**bool), v)
+			flags.VarPF(vv, name, shorthand, usage).NoOptDefVal = "true"
+
+		case *time.Duration:
+			vv := pflagvalue.NewDurationPtrValue(addr.(**time.Duration), v)
+			flags.VarP(vv, name, shorthand, usage)
+
 		case *int:
-			vv := pflagvalue.NewIntPtrValue(vAddrIface.(**int), v)
+			vv := pflagvalue.NewIntPtrValue(addr.(**int), v)
 			flags.VarP(vv, name, shorthand, usage)
 		case *int64:
-			vv := pflagvalue.NewInt64PtrValue(vAddrIface.(**int64), v)
+			vv := pflagvalue.NewInt64PtrValue(addr.(**int64), v)
 			flags.VarP(vv, name, shorthand, usage)
-		case *bool:
-			vv := pflagvalue.NewBoolPtrValue(vAddrIface.(**bool), v)
-			flags.VarPF(vv, name, shorthand, usage).NoOptDefVal = "true"
-		case *time.Duration:
-			vv := pflagvalue.NewDurationPtrValue(vAddrIface.(**time.Duration), v)
-			flags.VarP(vv, name, shorthand, usage)
+
+		default:
+			pValue := pflagvalue.InvValueFlag(vv, addr)
+			if pValue != nil {
+				flags.VarP(pValue, name, shorthand, usage)
+			}
 		}
 	}
 }
@@ -142,3 +151,11 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 func AppendCommand(child, parent *cobra.Command) {
 	parent.AddCommand(child)
 }
+
+// func IntPFlagValue(vv interface{}) pflag.Value {
+// 	switch v := vv.(type) {
+// 	case *int8:
+// 		return pflagvalue.NewInt8PtrValue(vv.(**int8), v)
+// 	}
+// 	return nil
+// }

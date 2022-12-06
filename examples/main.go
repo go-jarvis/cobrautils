@@ -15,6 +15,7 @@ type student struct {
 	Gender   bool
 	Address  address       `flag:"addr"`
 	Duration time.Duration `flag:"duration"`
+	Account  *uint8        `flag:"account" usage:"account count"`
 }
 
 type address struct {
@@ -59,6 +60,7 @@ func main() {
 	}
 	fmt.Println("stu.Name =", getString(stu.NamePtr))
 	fmt.Println("duration =", stu.Duration.Seconds())
+	fmt.Println("account=", *stu.Account)
 
 	/*
 	   go run . --addr.home sichuan

@@ -1,0 +1,40 @@
+package pflagvalue
+
+import (
+	"fmt"
+	"strconv"
+)
+
+// {{ . }}PtrValue is a flag.Value which stores the value in a *{{ . }} if it
+// can be parsed with strconv.ParseInt/ParseUint. If the value was not set the pointer
+// is nil.
+type {{ . }}PtrValue struct {
+	v **{{ . }}
+	b bool
+}
+
+func New{{ . | ToCapital }}PtrValue(p **{{ . }}, v *{{ . }}) *{{ . }}PtrValue {
+	*p = v
+	return &{{ . }}PtrValue{p, v != nil}
+}
+
+func (s *{{ . }}PtrValue) Set(val string) error {
+	n, err := strconv.Parse{{ . | TrimRightNumber | ToCapital}}(val, 10, {{. | TrimLeftLetter}})
+	if err != nil {
+		return err
+	}
+	nn:={{. }}(n)
+	*s.v, s.b = &nn, true
+	return nil
+}
+
+func (s *{{ . }}PtrValue) Type() string {
+	return "{{ . }}"
+}
+
+func (s *{{ . }}PtrValue) String() string {
+	if s.b {
+		return fmt.Sprint(**s.v)
+	}
+	return ""
+}
