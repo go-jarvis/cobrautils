@@ -14,7 +14,8 @@ go get -u github.com/go-jarvis/cobrautils
     + `string, *string`
 2. 数字:
     + `int, int64, uint, uint64`。 
-    + `*int, *int64`
+    + `*int, *int8, *int16, *int32, *int64`
+    + `*uint, *uint8, *uint16, *uint32, *uint64`
 3. 布尔类型:
     + `bool, *bool`
 4. 切片:

@@ -140,7 +140,7 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 			flags.VarP(vv, name, shorthand, usage)
 
 		default:
-			pValue := pflagvalue.InvValueFlag(vv, addr)
+			pValue := pflagvalue.IntValueFlag(vv, addr)
 			if pValue != nil {
 				flags.VarP(pValue, name, shorthand, usage)
 			}
