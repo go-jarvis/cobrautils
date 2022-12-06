@@ -9,11 +9,11 @@ import (
 	"text/template"
 )
 
-//go:embed int_value.go.tmpl
-var tmpl string
+//go:embed value_int.go.tmpl
+var tmpl_value_int string
 
-//go:embed flag_value.go.tmpl
-var flagTmpl string
+//go:embed value_flag.go.tmpl
+var tmpl_value_flag string
 
 func toCapital(s string) string {
 	if len(s) == 0 {
@@ -52,15 +52,15 @@ func genFlagValues(types []string) {
 }
 
 func genFlagValue(typ string) {
-	data := mustTmpl("pflag value", tmpl, typ)
+	data := mustTmpl("pflag value", tmpl_value_int, typ)
 	name := fmt.Sprintf("../pflagvalue/%s.go", typ)
 	mustWriteFile(name, data)
 }
 
 func genFlag(types []string) {
-	data := mustTmpl("flags", flagTmpl, types)
+	data := mustTmpl("flags", tmpl_value_flag, types)
 
-	name := fmt.Sprintf("../pflagvalue/flag_int.go")
+	name := fmt.Sprintf("../pflagvalue/value_flag.go")
 	mustWriteFile(name, data)
 }
 
