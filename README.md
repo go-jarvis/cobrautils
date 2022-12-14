@@ -1,4 +1,6 @@
-# cobrax 使用反射获取 flag 配置
+# cobrax 使用反射获取 flag 配置， 支持指针字段
+
+cobrax 通过反射方法， 解析 struct 字段中的 **特定** 参数， 绑定 flag 。
 
 ## 安装
 
