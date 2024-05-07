@@ -42,6 +42,7 @@ type student struct {
 
     NamePtr    *string `flag:"nameptr" usage:"student name" persistent:"true"`
     AgePtr     *int64  `flag:"ageptr" usage:"student age" shorthand:"a"`
+    Users []string `flag:"users" array:"true" usage:"user names"`
 }
 ```
 
@@ -49,6 +50,8 @@ type student struct {
 2. `shorthand:"c"` : 参数简写 `-c`, 简写没有潜逃
 3. `usage:"comment balalal"`: 参数说明
 4. `persistent` : 全局
+5. `array:"true"`: 仅对 `[]string` 接受类型有效。 可以使用 ArrayVarP 接受参数（默认是 SliceVarP）， **逗号`,`将被视为一个字符串其中的一部分，不再作为多参数分割符使用**。
+    + https://github.com/spf13/cobra/issues/661#issuecomment-469223372
 
 ### flag 设置指针
 

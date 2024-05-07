@@ -69,8 +69,18 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 		// 2.3. 获取
 		shorthand := typField.Tag.Get("shorthand")
 
-		// 3. 获取 usage
+		// 2.4. 获取 usage
 		usage := typField.Tag.Get("usage")
+
+		// 2.5. 获取 SliceMode 或 ArrayMode。
+		//     ArrayMode 可以在值中保留 逗号(,) 语义。 成为单一值。  --name=1,2,3,4 => name=1,2,3,4
+		//     SliceMode 值中使用 逗号(,) 表示分割。 支持多个值同时传递。  --name=1,2,3,4 => name=[1,2,3,4]
+		// https://github.com/spf13/cobra/issues/661#issuecomment-469223372
+		sliceMode := true
+		isArray := typField.Tag.Get("array")
+		if isArray == "true" {
+			sliceMode = false
+		}
 
 		// 4. 初始化 flags 变量
 		flags := cmd.Flags()
@@ -110,9 +120,14 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 			flags.BoolVarP(addr.(*bool), name, shorthand, v, usage)
 
 		case []string:
-			flags.StringSliceVarP(addr.(*[]string), name, shorthand, v, usage)
+			if sliceMode {
+				flags.StringSliceVarP(addr.(*[]string), name, shorthand, v, usage)
+			} else {
+				flags.StringArrayVarP(addr.(*[]string), name, shorthand, v, usage)
+			}
 		case []int:
 			flags.IntSliceVarP(addr.(*[]int), name, shorthand, v, usage)
+
 		case []uint:
 			flags.UintSliceVarP(addr.(*[]uint), name, shorthand, v, usage)
 
