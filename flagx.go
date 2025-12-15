@@ -67,7 +67,10 @@ func BindFlags(cmd *cobra.Command, opts interface{}, basename ...string) {
 		name = strings.Join(parts, ".")
 
 		// 2.3. 获取
-		shorthand := typField.Tag.Get("shorthand")
+		shorthand := typField.Tag.Get("short")
+		if shorthand == "" {
+			shorthand = typField.Tag.Get("shorthand")
+		}
 
 		// 2.4. 获取 usage
 		usage := typField.Tag.Get("usage")

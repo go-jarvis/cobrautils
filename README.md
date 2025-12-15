@@ -38,16 +38,16 @@ func (f *FlagSet) Uint64VarP(p *uint64, name, shorthand string, value uint64, us
 ```go
 type student struct {
     Name    string `flag:"name" usage:"student name" persistent:"true"`
-    Age     int64  `flag:"age" usage:"student age" shorthand:"a"`
+    Age     int64  `flag:"age" usage:"student age" short:"a"`
 
     NamePtr    *string `flag:"nameptr" usage:"student name" persistent:"true"`
-    AgePtr     *int64  `flag:"ageptr" usage:"student age" shorthand:"a"`
+    AgePtr     *int64  `flag:"ageptr" usage:"student age" short:"a"`
     Users []string `flag:"users" array:"true" usage:"user names"`
 }
 ```
 
 1. `flag:"config"` : flag 的名字, `--config`， 嵌套 struct 之间使用 `.` 连接, `--config.password`
-2. `shorthand:"c"` : 参数简写 `-c`, 简写没有潜逃
+2. `short:"c"` : 参数简写 `-c`, 简写没有潜逃。 使用 `short` 代替之前的 `shorthand`（兼容）。 
 3. `usage:"comment balalal"`: 参数说明
 4. `persistent` : 全局
 5. `array:"true"`: 仅对 `[]string` 接受类型有效。 可以使用 ArrayVarP 接受参数（默认是 SliceVarP）， **逗号`,`将被视为一个字符串其中的一部分，不再作为多参数分割符使用**。
@@ -98,7 +98,7 @@ import (
 
 type student struct {
     Name    string `flag:"name" usage:"student name" persistent:"true"`
-    Age     int64  `flag:"age" usage:"student age" shorthand:"a"`
+    Age     int64  `flag:"age" usage:"student age" short:"a"`
 }
 
 var rootCmd = &cobra.Command{
